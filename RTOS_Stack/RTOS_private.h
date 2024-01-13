@@ -11,6 +11,10 @@
 #ifndef RTOS_PRIVATE_H_
 #define RTOS_PRIVATE_H_
 
+
+#define Task_Suspended    1
+#define Task_Resumed      0
+
 /*Task structure*/
 typedef struct
 {
