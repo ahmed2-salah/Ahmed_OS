@@ -29,36 +29,76 @@ void RTOS_voidStart(void)
 }
 
 /***********************************************************************/
-void RTOS_voidCreateTask(u8 Copy_u8Priority , u16 Copy_u16Priodicity , void (*Copy_pvTaskFunc) (void))
+u8 RTOS_u8CreateTask(u8 Copy_u8Priority , u16 Copy_u16Priodicity , void (*Copy_pvTaskFunc) (void),u16 Copy_u16FirstDelay)
 {
-    arrTasks[Copy_u8Priority].Priodicity=Copy_u16Priodicity;
-    arrTasks[Copy_u8Priority].TaskFunc=Copy_pvTaskFunc;
+    u8 Local_errorState = OK;
+
+	if(arrTasks[Copy_u8Priority].TaskFunc==NULL)
+	{
+		arrTasks[Copy_u8Priority].Priodicity=Copy_u16Priodicity;
+		arrTasks[Copy_u8Priority].TaskFunc=Copy_pvTaskFunc;
+		arrTasks[Copy_u8Priority].State=Task_Resumed;  /*Initial state for the task*/
+		arrTasks[Copy_u8Priority].FirstDelay=Copy_u16FirstDelay;
+	}
+	else
+	{
+		/*Priority is reserved before by another task */
+		Local_errorState=NOT_OK;
+	}
+
+	return Local_errorState;
 
 }
 /***********************************************************************/
-
+void RTOS_voidSuspendTask(u8 Copy_u8Priority)
+{
+	arrTasks[Copy_u8Priority].State=Task_Suspended;
+}
+/***********************************************************************/
+void RTOS_voidResumeTask(u8 Copy_u8Priority)
+{
+	arrTasks[Copy_u8Priority].State=Task_Resumed;
+}
+/***********************************************************************/
 static void voidScheduler(void)
 {
-   static u16 Copy_tickCounter=0;
    u8 TaskCounter=0;
 
-   Copy_tickCounter++;
 
-   /*Looping over all tasks to check periodicity*/
+	/*Looping over all tasks to check periodicity*/
+	for(TaskCounter=0;TaskCounter<TaskNum;TaskCounter++)
+	{
 
-   for(TaskCounter=0;TaskCounter<TaskNum;TaskCounter++)
-   {
-	   if((Copy_tickCounter%arrTasks[TaskCounter].Priodicity)==0)
-	   {
-           if(arrTasks[TaskCounter].TaskFunc !=NULL)
-           {
-        	   arrTasks[TaskCounter].TaskFunc();
-           }
-           else
-           {
-        	   /*do nothing*/
-           }
-	   }
-   }
-
+		if(arrTasks[TaskCounter].State==Task_Resumed)
+		{
+			if(arrTasks[TaskCounter].FirstDelay==0)
+			{
+				/*Execute Task*/
+				if(arrTasks[TaskCounter].TaskFunc !=NULL)
+				{
+					arrTasks[TaskCounter].TaskFunc();
+					/*assign Priodicity minus one to task first delay*/
+					arrTasks[TaskCounter].FirstDelay=arrTasks[TaskCounter].Priodicity-1;
+				}
+				else
+				{
+					/*do nothing*/
+				}
+			}
+			else
+			{
+				arrTasks[TaskCounter].FirstDelay--;
+			}
+		}
+		else
+		{
+			/*Task is Suspended and Do NO thing */
+		}
+	}
 }
+/***********************************************************************/
+void RTOS_voidDeleteTask(u8 Copy_u8Priority)
+{
+	arrTasks[Copy_u8Priority].TaskFunc=NULL;
+}
+/***********************************************************************/
