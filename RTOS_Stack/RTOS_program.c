@@ -50,7 +50,11 @@ u8 RTOS_u8CreateTask(u8 Copy_u8Priority , u16 Copy_u16Priodicity , void (*Copy_p
 
 }
 /***********************************************************************/
-
+void RTOS_voidSuspendTask(u8 Copy_u8Priority)
+{
+	arrTasks[Copy_u8Priority].State=Task_Suspended;
+}
+/***********************************************************************/
 static void voidScheduler(void)
 {
    static u16 Copy_tickCounter=0;
