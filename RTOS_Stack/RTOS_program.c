@@ -31,8 +31,22 @@ void RTOS_voidStart(void)
 /***********************************************************************/
 u8 RTOS_u8CreateTask(u8 Copy_u8Priority , u16 Copy_u16Priodicity , void (*Copy_pvTaskFunc) (void),u16 Copy_u16FirstDelay)
 {
-    arrTasks[Copy_u8Priority].Priodicity=Copy_u16Priodicity;
-    arrTasks[Copy_u8Priority].TaskFunc=Copy_pvTaskFunc;
+    u8 Local_errorState = OK;
+
+	if(arrTasks[Copy_u8Priority].TaskFunc==NULL)
+	{
+		arrTasks[Copy_u8Priority].Priodicity=Copy_u16Priodicity;
+		arrTasks[Copy_u8Priority].TaskFunc=Copy_pvTaskFunc;
+		arrTasks[Copy_u8Priority].State=Task_Resumed;  /*Initial state for the task*/
+		arrTasks[Copy_u8Priority].FirstDelay=Copy_u16FirstDelay;
+	}
+	else
+	{
+		/*Priority is reserved before by another task */
+		Local_errorState=NOT_OK;
+	}
+
+	return Local_errorState;
 
 }
 /***********************************************************************/
