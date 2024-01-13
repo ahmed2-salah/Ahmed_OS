@@ -62,26 +62,38 @@ void RTOS_voidResumeTask(u8 Copy_u8Priority)
 /***********************************************************************/
 static void voidScheduler(void)
 {
-   static u16 Copy_tickCounter=0;
    u8 TaskCounter=0;
 
-   Copy_tickCounter++;
 
-   /*Looping over all tasks to check periodicity*/
+	/*Looping over all tasks to check periodicity*/
+	for(TaskCounter=0;TaskCounter<TaskNum;TaskCounter++)
+	{
 
-   for(TaskCounter=0;TaskCounter<TaskNum;TaskCounter++)
-   {
-	   if((Copy_tickCounter%arrTasks[TaskCounter].Priodicity)==0)
-	   {
-           if(arrTasks[TaskCounter].TaskFunc !=NULL)
-           {
-        	   arrTasks[TaskCounter].TaskFunc();
-           }
-           else
-           {
-        	   /*do nothing*/
-           }
-	   }
-   }
+		if(arrTasks[TaskCounter].State==Task_Resumed)
+		{
+			if(arrTasks[TaskCounter].FirstDelay==0)
+			{
+				/*Execute Task*/
+				if(arrTasks[TaskCounter].TaskFunc !=NULL)
+				{
+					arrTasks[TaskCounter].TaskFunc();
+					/*assign Priodicity minus one to task first delay*/
+					arrTasks[TaskCounter].FirstDelay=arrTasks[TaskCounter].Priodicity-1;
+				}
+				else
+				{
+					/*do nothing*/
+				}
+			}
+			else
+			{
+				arrTasks[TaskCounter].FirstDelay--;
+			}
+		}
+		else
+		{
+			/*Task is Suspended and Do NO thing */
+		}
+	}
 
 }
