@@ -20,8 +20,14 @@ typedef struct
 {
 	u16 Priodicity;
 	void (*TaskFunc)(void);
+	u8 State;
+	u16 FirstDelay;
 }Task_t;
 
+enum Error_type
+{
+	OK,NOT_OK
+};
 
 
 static void voidScheduler(void);
