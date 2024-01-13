@@ -95,5 +95,10 @@ static void voidScheduler(void)
 			/*Task is Suspended and Do NO thing */
 		}
 	}
-
 }
+/***********************************************************************/
+void RTOS_voidDeleteTask(u8 Copy_u8Priority)
+{
+	arrTasks[Copy_u8Priority].TaskFunc=NULL;
+}
+/***********************************************************************/
