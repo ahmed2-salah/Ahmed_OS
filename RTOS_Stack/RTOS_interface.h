@@ -16,4 +16,13 @@ void RTOS_voidStart(void);
 
 void RTOS_voidCreateTask(u8 Copy_u8Priority , u16 Copy_u16Priodicity , void (*Copy_pvTaskFunc) (void));
 
+
+void RTOS_voidSuspendTask(u8 Copy_u8Priority);
+
+
+void RTOS_voidResumeTask(u8 Copy_u8Priority);
+
+
+void RTOS_voidDeleteTask(u8 Copy_u8Priority);
+
 #endif /* RTOS_INTERFACE_H_ */
