@@ -19,9 +19,10 @@ The Real Time operating system stack consists of two Layers:
 ## Task parameters
 1. Pointer to function to point to the task code
 2. Task name.
-3. Task State.
-4. Task priority.
+3. Task State    ->(Ready/suspended).
+4. Task priority ->(0 is higher priority).
 5. Task periodicity.
+6. Task First delay.
 
 All of the task parameter are defined as a new type (Task_t) as a structure.
    
