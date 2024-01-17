@@ -25,4 +25,9 @@ The Real Time operating system stack consists of two Layers:
 6. Task First delay.
 
 All of the task parameter are defined as a new type (Task_t) as a structure.
+
+## Scheduler alogrithm
+1. Check if the task is exists or not.
+2. Check if the task is the higher priority or not.
+3. Check if the task FD == 0 to execute the task code.
    
